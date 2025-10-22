@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "320827596567",
+    "project_id": "kitap-85d14",
+    "storage_bucket": "kitap-85d14.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320827596567:android:5ff50c49e996d908302152",
+        "android_client_info": {
+          "package_name": "com.example.kitap"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6nkbKEKrxqekvjlbEtgLVcb8fAOwzE18"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
