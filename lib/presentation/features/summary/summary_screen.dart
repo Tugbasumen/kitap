@@ -42,31 +42,32 @@ class _BookSummaryScreenState extends State<BookSummaryScreen> {
       await _initializeControllerFuture;
       final image = await _cameraController!.takePicture();
 
+      // Loading ekranı burada açılıyor
+      setState(() {
+        isLoading = true;
+      });
+
       final inputImage = InputImage.fromFile(File(image.path));
       final textRecognizer = TextRecognizer();
       final RecognizedText recognisedText = await textRecognizer.processImage(
         inputImage,
       );
 
-      setState(() {
-        recognizedText = recognisedText.text;
-      });
+      recognizedText = recognisedText.text;
 
-      // Özetleme için API’ye gönder
       await _sendToDeepSeekAPI(recognisedText.text);
     } catch (e) {
       debugPrint("Hata: $e");
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
   Future<void> _sendToDeepSeekAPI(String text) async {
-    setState(() {
-      isLoading = true;
-    });
-
     try {
       final response = await http.post(
-        Uri.parse("http://10.138.147.239:5000/summarize"),
+        Uri.parse("http://192.168.1.102:5000/summarize"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"text": recognizedText}),
       );
@@ -84,10 +85,16 @@ class _BookSummaryScreenState extends State<BookSummaryScreen> {
           );
         }
       } else {
-        _showError("API hatası: ${response.statusCode}");
+        _showError("API sunucusundan hata kodu alındı: ${response.statusCode}");
       }
+    } on SocketException {
+      // <-- SocketException'ı yakalıyoruz
+      _showError(
+        "Sunucuya bağlanılamadı. Lütfen sunucunuzun açık ve doğru adreste (192.168.1.104:5000) olduğundan emin olun.",
+      );
     } catch (e) {
-      _showError("Bağlantı hatası: $e");
+      // Diğer tüm hatalar için genel bir mesaj
+      _showError("Beklenmeyen bir hata oluştu. Detay: $e");
     } finally {
       setState(() {
         isLoading = false;
@@ -109,71 +116,79 @@ class _BookSummaryScreenState extends State<BookSummaryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Kitap Özeti"),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/isbn'),
+    return WillPopScope(
+      // Geri tuşuna basınca dashboard'a yönlendirme
+      onWillPop: () async {
+        context.go('/dashboard');
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Kitap Özeti"),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.go('/dashboard'),
+          ),
         ),
-      ),
-      body: Column(
-        children: [
-          if (_cameraController != null)
-            FutureBuilder(
-              future: _initializeControllerFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(18),
-                          child: SizedBox(
-                            height: 400,
-                            width: double.infinity,
-                            child: CameraPreview(_cameraController!),
-                          ),
-                        ),
+        body: isLoading
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    CircularProgressIndicator(color: AppTheme.primaryColor),
+                    SizedBox(height: 20),
+                    Text(
+                      "Özet oluşturuluyor, lütfen bekleyin...",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.primaryColor,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(22.0),
-                        child: CustomButton(
-                          text: "Fotoğraf Çek ve Özetle",
-                          onPressed: _takePictureAndRecognizeText,
-                        ),
-                      ),
-                    ],
-                  );
-                } else {
-                  return const Center(child: CircularProgressIndicator());
-                }
-              },
-            ),
-
-          const SizedBox(height: 20),
-          if (recognizedText.isNotEmpty)
-            Expanded(
-              child: SingleChildScrollView(padding: const EdgeInsets.all(8.0)),
-            ),
-
-          if (isLoading)
-            Column(
-              children: const [
-                CircularProgressIndicator(color: AppTheme.primaryColor),
-                SizedBox(height: 10),
-                Text(
-                  "Özet oluşturuluyor, lütfen bekleyin...",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.primaryColor,
-                  ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-        ],
+              )
+            : Column(
+                children: [
+                  if (_cameraController != null)
+                    FutureBuilder(
+                      future: _initializeControllerFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(18),
+                                  child: SizedBox(
+                                    height: 400,
+                                    width: double.infinity,
+                                    child: CameraPreview(_cameraController!),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(22.0),
+
+                                child: CustomButton(
+                                  text: "Fotoğraf Çek ve Özetle",
+                                  onPressed: _takePictureAndRecognizeText,
+                                ),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      },
+                    ),
+                  const SizedBox(height: 20),
+                ],
+              ),
       ),
     );
   }

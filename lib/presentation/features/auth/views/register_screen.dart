@@ -5,8 +5,8 @@ import 'package:kitap/core/validators/validators.dart';
 import 'package:kitap/presentation/common/custom_button.dart';
 import 'package:kitap/presentation/common/custom_snackbar.dart';
 import 'package:kitap/presentation/common/custom_textFormField.dart';
-
 import '../providers/auth_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -31,7 +31,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     setState(() => _isLoading = true);
 
     try {
-      await ref.read(authRepositoryProvider).login(email, password);
+      await ref.read(authRepositoryProvider).register("User", email, password);
 
       if (mounted) {
         CustomSnackbar.show(
@@ -41,10 +41,31 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         );
         context.go('/login');
       }
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
+      // <-- Sadece FirebaseAuth hatalarını yakala
+      String errorMessage;
+
+      // Hata koduna göre kullanıcı dostu mesaj belirleme
+      if (e.code == 'email-already-in-use') {
+        errorMessage =
+            "Bu e-posta adresi zaten kullanımda. Lütfen giriş yapın veya başka bir e-posta kullanın.";
+      } else if (e.code == 'weak-password') {
+        errorMessage = "Şifreniz çok zayıf. Daha güçlü bir şifre seçin.";
+      } else {
+        // Diğer bilinmeyen/genel hatalar için
+        errorMessage = "Bilinmeyen bir hata oluştu: ${e.message}";
+      }
+
       CustomSnackbar.show(
         context,
-        message: "Hata: $e",
+        message: "$errorMessage", // <-- Kullanıcı dostu mesajı göster
+        type: SnackbarType.error,
+      );
+    } catch (e) {
+      // <-- Diğer tüm hatalar için genel yakalama
+      CustomSnackbar.show(
+        context,
+        message: "Beklenmeyen bir hata oluştu: $e",
         type: SnackbarType.error,
       );
     } finally {

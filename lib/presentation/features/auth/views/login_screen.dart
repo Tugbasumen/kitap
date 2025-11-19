@@ -6,6 +6,7 @@ import 'package:kitap/presentation/common/custom_button.dart';
 import 'package:kitap/presentation/common/custom_snackbar.dart';
 import 'package:kitap/presentation/common/custom_textFormField.dart';
 import '../providers/auth_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -38,10 +39,32 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
         context.go('/dashboard');
       }
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
+      // <-- Sadece FirebaseAuth hatalarını yakala
+      String errorMessage;
+
+      // Hata koduna göre kullanıcı dostu mesaj belirleme
+      if (e.code == 'user-not-found' ||
+          e.code == 'wrong-password' ||
+          e.code == 'invalid-credential') {
+        errorMessage = "Girdiğiniz e-posta veya şifre yanlış.";
+      } else if (e.code == 'user-disabled') {
+        errorMessage = "Bu kullanıcı hesabı devre dışı bırakılmıştır.";
+      } else {
+        // Diğer bilinmeyen/genel hatalar için teknik hatayı gösterme
+        errorMessage = "Bilinmeyen bir hata oluştu: ${e.message}";
+      }
+
       CustomSnackbar.show(
         context,
-        message: "Hata: $e",
+        message: "$errorMessage", // <-- Kullanıcı dostu mesajı göster
+        type: SnackbarType.error,
+      );
+    } catch (e) {
+      // <-- Diğer tüm hatalar için genel yakalama
+      CustomSnackbar.show(
+        context,
+        message: "Beklenmeyen bir hata oluştu: $e",
         type: SnackbarType.error,
       );
     } finally {

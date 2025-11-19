@@ -18,7 +18,7 @@ class BookDetailScreen extends ConsumerWidget {
       body: bookAsync.when(
         loading: () =>
             const Center(child: CircularProgressIndicator(color: Colors.white)),
-        error: (err, _) => Center(child: Text('Hata: $err')),
+        error: (err, _) => Center(child: Text('$err')),
         data: (book) {
           if (book == null) {
             return Center(
@@ -28,23 +28,33 @@ class BookDetailScreen extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      Icons.highlight_off,
-                      size: 70,
-                      color: AppTheme.primaryColor,
+                      Icons.cancel_outlined,
+                      size: 90,
+                      color: AppTheme.primaryColor.withOpacity(0.8),
                     ),
                     const SizedBox(height: 20),
                     const Text(
-                      'Kitap bulunamadı',
-                      style: TextStyle(fontSize: 18),
+                      'Kitap bulunamadı ',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    const SizedBox(height: 30),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Kitap özeti oluşturmak için arka kapaktaki açıklamayı kameraya okutabilirsin.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: const Color.fromARGB(255, 56, 48, 48),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
                       child: CustomButton(
-                        text: 'Kitap Özeti Oluşturmak İçin Tıkla',
-                        onPressed: () {
-                          context.go('/summary');
-                        },
+                        text: ' Özet Oluştur',
+                        onPressed: () => context.go('/summary'),
                         type: ButtonType.primary,
                       ),
                     ),
