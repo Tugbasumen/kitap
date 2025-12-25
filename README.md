@@ -82,13 +82,14 @@ Bu metrikler sayesinde modelin içerik koruma başarısı nicel olarak ölçülm
 Bu çalışma, yerel büyük dil modellerinin Türkçe metin özetleme görevlerinde etkili biçimde kullanılabileceğini ve mobil uygulamalarla entegre edilebileceğini göstermektedir.
 
 <img width="347" height="711" alt="image" src="https://github.com/user-attachments/assets/8a725c33-3cbf-4b29-9104-0a691553aba3" />
-<img width="362" height="752" alt="image" src="https://github.com/user-attachments/assets/52cd3bef-4352-40c1-8cdf-638985da1eb5" />
-<img width="345" height="729" alt="image" src="https://github.com/user-attachments/assets/027c84e0-c284-4b94-8d2d-9d4983c270d6" />
-<img width="346" height="768" alt="image" src="https://github.com/user-attachments/assets/fd476748-a1d6-41b8-8cbb-4d6b93cd9773" />
-<img width="337" height="694" alt="image" src="https://github.com/user-attachments/assets/38a79eec-a761-4fc3-8981-63d642ab5efe" />
-<img width="342" height="708" alt="image" src="https://github.com/user-attachments/assets/1fa30d21-1f47-4a84-9cd5-b189a420971c" />
-<img width="410" height="857" alt="image" src="https://github.com/user-attachments/assets/7e762a2a-789b-44e3-a2e7-387d005cc4fe" />
-<img width="373" height="775" alt="image" src="https://github.com/user-attachments/assets/b39913a5-9ded-4272-8b81-c1e4511978f5" />
-<img width="444" height="949" alt="image" src="https://github.com/user-attachments/assets/2a207d83-8ab8-4a8a-92ba-208d764387ec" />
+<img width="347" height="711" alt="image" src="https://github.com/user-attachments/assets/52cd3bef-4352-40c1-8cdf-638985da1eb5" />
+<img width="347" height="711" alt="image" src="https://github.com/user-attachments/assets/027c84e0-c284-4b94-8d2d-9d4983c270d6" />
+<img width="347" height="711" alt="image" src="https://github.com/user-attachments/assets/fd476748-a1d6-41b8-8cbb-4d6b93cd9773" />
+<img width="347" height="711" alt="image" src="https://github.com/user-attachments/assets/38a79eec-a761-4fc3-8981-63d642ab5efe" />
+<img width="347" height="711" alt="image" src="https://github.com/user-attachments/assets/1fa30d21-1f47-4a84-9cd5-b189a420971c" />
+<img width="347" height="711" alt="image" src="https://github.com/user-attachments/assets/7e762a2a-789b-44e3-a2e7-387d005cc4fe" />
+<img width="347" height="711" alt="image" src="https://github.com/user-attachments/assets/b39913a5-9ded-4272-8b81-c1e4511978f5" />
+<img width="347" height="711" alt="image" src="https://github.com/user-attachments/assets/2a207d83-8ab8-4a8a-92ba-208d764387ec" />
+<img width="347" height="711" alt="image" src="https://github.com/user-attachments/assets/c5da19be-fed4-4d6f-8d9c-3a6ab7d65494" />
+
 <img width="444" height="949" alt="image" src="https://github.com/user-attachments/assets/fe7b5785-d8dc-413b-8e72-c209ae6f2612" />
-<img width="465" height="970" alt="image" src="https://github.com/user-attachments/assets/a1d3e52c-979e-4faa-af97-6c59af7b5d90" />
