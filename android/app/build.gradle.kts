@@ -9,12 +9,15 @@ plugins {
 
 android {
     namespace = "com.example.kitap"
-    compileSdk = flutter.compileSdkVersion
+    // Kamera ve bildirim eklentileri için en yüksek SDK ile derle
+    compileSdk = 36
     ndkVersion = "27.0.12077973"
 
     compileOptions {
+        // Java 8+ özellikleri ve desugaring
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -43,4 +46,9 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // flutter_local_notifications için gerekli core library desugaring
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
 }

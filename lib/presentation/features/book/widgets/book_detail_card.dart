@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kitap/core/theme/app_theme.dart';
 import 'package:kitap/models/book.dart';
 import 'package:kitap/presentation/common/custom_snackbar.dart';
+import 'package:kitap/core/notifications/notification_service.dart';
+import 'package:kitap/presentation/features/settings/providers/notification_settings_provider.dart';
 import 'package:kitap/presentation/features/favori/provider/favori_provider.dart';
 
 class BookDetailCard extends ConsumerWidget {
@@ -12,8 +14,11 @@ class BookDetailCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final favorites = ref.watch(favoritesProvider);
+    NotificationService().isStillFavorite = (book) =>
+        ref.read(favoritesProvider.notifier).isFavorite(book);
+    ref.watch(favoritesProvider);
     final isFavorite = ref.read(favoritesProvider.notifier).isFavorite(book);
+    final notificationsEnabled = ref.watch(notificationSettingsProvider);
 
     return Center(
       child: Card(
@@ -83,11 +88,17 @@ class BookDetailCard extends ConsumerWidget {
                       color: isFavorite ? AppTheme.primaryColor : Colors.grey,
                       size: 28,
                     ),
-                    onPressed: () {
-                      final wasFavorite = ref
-                          .read(favoritesProvider.notifier)
-                          .isFavorite(book);
-                      ref.read(favoritesProvider.notifier).toggleFavorite(book);
+                    onPressed: () async {
+                      final favoritesNotifier = ref.read(
+                        favoritesProvider.notifier,
+                      );
+                      final wasFavorite = favoritesNotifier.isFavorite(book);
+
+                      //  HER ZAMAN ÖNCE İPTAL
+                      await NotificationService().cancelBookNotifications(book);
+
+                      // Favori durumunu değiştir
+                      favoritesNotifier.toggleFavorite(book);
 
                       CustomSnackbar.show(
                         context,
@@ -98,6 +109,26 @@ class BookDetailCard extends ConsumerWidget {
                             ? SnackbarType.error
                             : SnackbarType.success,
                       );
+
+                      // Favoriden kaldırıldıysa burada biter
+                      if (wasFavorite) return;
+
+                      // Favoriye eklendiyse → bildirimi planla
+                      if (notificationsEnabled) {
+                        final granted = await NotificationService()
+                            .requestPermission();
+                        if (!granted) return;
+
+                        NotificationService().scheduleInAppBookReminder(
+                          book: book,
+                          delay: const Duration(minutes: 1),
+                        );
+
+                        await NotificationService().scheduleBookReminder(
+                          book: book,
+                          delay: const Duration(minutes: 1),
+                        );
+                      }
                     },
                   ),
                 ],

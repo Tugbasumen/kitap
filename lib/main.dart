@@ -4,10 +4,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:kitap/core/routes/app_router.dart';
 import 'package:kitap/core/theme/app_theme.dart';
 import 'package:kitap/core/theme/provider/theme_provider.dart';
+import 'package:kitap/core/notifications/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(); // Firebase'i başlatıyoruz
+  // Bildirim servisini başlat
+  await NotificationService().init();
   runApp(const ProviderScope(child: MyApp()));
 }
 

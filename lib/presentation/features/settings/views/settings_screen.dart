@@ -6,6 +6,7 @@ import 'package:kitap/core/theme/provider/theme_provider.dart';
 import 'package:kitap/presentation/features/auth/providers/auth_provider.dart';
 import 'package:kitap/presentation/common/custom_button.dart';
 import 'package:kitap/presentation/common/custom_snackbar.dart';
+import 'package:kitap/presentation/features/settings/providers/notification_settings_provider.dart';
 import 'package:kitap/presentation/features/settings/widgets/setting_tile.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -16,13 +17,28 @@ class SettingsScreen extends ConsumerWidget {
     final user = ref.watch(authStateChangesProvider).value;
     final isDarkMode = ref.watch(themeProvider);
     final themeNotifier = ref.read(themeProvider.notifier);
+    final notificationsEnabled = ref.watch(notificationSettingsProvider);
+    final notificationNotifier = ref.read(
+      notificationSettingsProvider.notifier,
+    );
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("Ayarlar"),
         backgroundColor: AppTheme.primaryColor,
         foregroundColor: Colors.white,
+        actions: [
+          if (user != null)
+            IconButton(
+              tooltip: "Çıkış Yap",
+              icon: const Icon(Icons.logout),
+              onPressed: () {
+                _showLogoutDialog(context, ref);
+              },
+            ),
+        ],
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -103,12 +119,23 @@ class SettingsScreen extends ConsumerWidget {
                       activeColor: AppTheme.primaryColor,
                     ),
                   ),
+
+                  SettingsTile(
+                    icon: Icons.notifications_active_outlined,
+                    title: "Bildirimler",
+                    trailing: Switch(
+                      value: notificationsEnabled,
+                      onChanged: (_) {
+                        notificationNotifier.toggle();
+                      },
+                      activeColor: AppTheme.primaryColor,
+                    ),
+                  ),
                 ],
               ),
             ),
 
             const SizedBox(height: 24),
-
             // Hakkında
             const Text(
               "Hakkında",
@@ -122,6 +149,11 @@ class SettingsScreen extends ConsumerWidget {
             Card(
               child: Column(
                 children: [
+                  SettingsTile(
+                    icon: Icons.language,
+                    title: "Dil",
+                    subtitle: "Türkçe",
+                  ),
                   SettingsTile(
                     icon: Icons.info_outline,
                     title: "Uygulama Hakkında",
@@ -143,17 +175,6 @@ class SettingsScreen extends ConsumerWidget {
             ),
 
             const SizedBox(height: 32),
-
-            // Çıkış Butonu
-            if (user != null) ...[
-              CustomButton(
-                text: "Çıkış Yap",
-                onPressed: () {
-                  _showLogoutDialog(context, ref);
-                },
-              ),
-              const SizedBox(height: 16),
-            ],
           ],
         ),
       ),

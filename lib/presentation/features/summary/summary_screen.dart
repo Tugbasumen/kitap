@@ -67,7 +67,7 @@ class _BookSummaryScreenState extends State<BookSummaryScreen> {
   Future<void> _sendToDeepSeekAPI(String text) async {
     try {
       final response = await http.post(
-        Uri.parse("http://192.168.1.102:5000/summarize"),
+        Uri.parse("http://10.138.147.239:5000/summarize"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"text": recognizedText}),
       );

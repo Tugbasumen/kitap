@@ -1,6 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Required for Android 13+ runtime notifications permission -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Android 12+ exact alarm scheduling (gerekirse) -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
     <application
-        android:label="kitap"
+        android:label="Kitap Özet Uygulaması"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

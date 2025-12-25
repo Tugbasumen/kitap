@@ -35,7 +35,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     // 5 saniye sonra dashboard'a yönlendir
     Future.delayed(const Duration(seconds: 5), () {
       if (!mounted) return;
-      context.go('/dashboard');
+      context.go('/login');
     });
   }
 
